@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
-set -euxo pipefail
+set -euo pipefail
 
 #######################################################################################################################
 # Install emacs-nox
+# - IDEMPOTENT:
+#   - If run again will update package to latest version.
+#   - This is good enough.
 #######################################################################################################################
 # Unfortunately, since Ubuntu 24.04 (Noble) "mailutils" is now a recommended package rather than a
 # suggested package for emacs-nox.
