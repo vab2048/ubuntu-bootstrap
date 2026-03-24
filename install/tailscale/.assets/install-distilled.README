@@ -1,0 +1,56 @@
+
+#######################################################################################################################
+# This is the "distilled" version of the raw `install.sh` script so that you can see at a glance
+# what it actually does.
+#######################################################################################################################
+
+# See /utils/os-release.sh for centralized commentary.
+# This will give us the e.g. UBUNTU_CODENAME=noble for v22.04.
+source /etc/os-release
+
+# 1. Set key env vars
+TRACK="stable" # We want the stable tailscale release not the unstable one
+OS="ubuntu"
+DEBIAN_FRONTEND=noninteractive
+VERSION="$UBUNTU_CODENAME"
+PACKAGETYPE="apt"
+APT_KEY_TYPE="keyring"
+APT_KEY_FILENAME="tailscale-archive-keyring.gpg"
+APT_KEY_CANONICAL_LOCATION="/usr/share/keyrings/tailscale-archive-keyring.gpg"
+
+# To avoid relative path issues when referencing files.
+script_path="$(realpath "$0")"
+script_dir="$(dirname "$script_path")"
+
+# 2. Get the tailscale public key in the correct location with correct permission.
+#    This is so we can verify the package being downloaded has been signed by their private key.
+#
+#    You can get the key from the template URL: `https://pkgs.tailscale.com/$TRACK/$OS/$VERSION.noarmor.gpg`
+#    For example: `curl https://pkgs.tailscale.com/stable/ubuntu/noble.noarmor.gpg --output tailscale-archive-keyring.gpg`
+#
+#    The key is already present as the "tailscale-archive-keyring.gpg" file in the current directory. We just copy it
+#    to a known location and set the correct permissions.
+#    -n -> no-clobber - do nothing if file exists and exit with code 0
+cp -n $script_dir/$APT_KEY_FILENAME $APT_KEY_CANONICAL_LOCATION
+sudo chmod 0644 $APT_KEY_CANONICAL_LOCATION
+
+# 3. Add the tailscale repository to our list of package repositories
+#
+#    You can get the apt package sources list from the template URL:
+#       `https://pkgs.tailscale.com/$TRACK/$OS/$VERSION.tailscale-keyring.list`
+#    For example: https://pkgs.tailscale.com/stable/ubuntu/noble.tailscale-keyring.list
+#
+#    This file just contains a line like so:
+#      deb [signed-by=/usr/share/keyrings/tailscale-archive-keyring.gpg] https://pkgs.tailscale.com/stable/ubuntu noble main
+#    We write it out as
+sudo tee /etc/apt/sources.list.d/tailscale.list >/dev/null <<EOF
+# Tailscale packages for ubuntu noble
+deb [signed-by=$APT_KEY_CANONICAL_LOCATION] https://pkgs.tailscale.com/stable/ubuntu noble main
+EOF
+sudo chmod 0644 /etc/apt/sources.list.d/tailscale.list
+
+# 4. Update the package repository metadata
+sudo apt-get update
+
+# 5.  Install tailscale....
+### This would be where you do the sudo apt-get install -y tailscale (and other packages)
