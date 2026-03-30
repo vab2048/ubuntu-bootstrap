@@ -12,7 +12,12 @@ banner "Running package-install.sh"
 banner "apt-get update"
 sudo apt-get update
 
-# Install each.
+# Install each....
+
+banner "Installing common utility packages"
+run_module_script utils install
+banner "util packages installation complete"
+
 banner "Installing emacs"
 run_module_script emacs install
 banner "emacs installation complete"
