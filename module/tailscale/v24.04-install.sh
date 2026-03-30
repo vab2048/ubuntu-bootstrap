@@ -8,4 +8,4 @@ set -euo pipefail
 script_path="$(realpath "$0")"
 script_dir="$(dirname "$script_path")"
 
-source "$script_dir/install.sh"
+source "$script_dir/.assets/install.sh"

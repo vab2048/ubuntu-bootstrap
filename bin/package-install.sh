@@ -15,10 +15,10 @@ REPO_ROOT=/opt/ubuntu-bootstrap
 # install <feature>:
 #    - $1 - <feature> - single expected argument. A "feature" can install multiple packages.
 #      - the name of the feature you want installed. The name corresponds to the directory under /install/<feature>.
-#    - This function will try to run the script /install/<feature>/$VERSION_ID.sh", where:
+#    - This function will try to run the script /module/<feature>/$VERSION_ID.sh", where:
 #      - feature     -> the directory name e.g. "emacs"
 #      - $VERSION_ID -> env var sourced from /etc/os-release e.g. 24.04
-#    - For example: /install/emacs/24.04.sh
+#    - For example: /module/emacs/24.04-install.sh
 install() {
     if [ "$#" -ne 1 ]; then
         echo "Usage: install <feature>"
@@ -26,14 +26,15 @@ install() {
     fi
 
     local feature="$1"
-    local script="$REPO_ROOT/install/$feature/v$VERSION_ID.sh"
+    local file_name="v$VERSION_ID-install.sh"
+    local script="$REPO_ROOT/module/$feature/$file_name"
 
     if [[ ! -f "$script" ]]; then
-        echo "No script for $feature on Ubuntu $VERSION_ID" >&2
+        echo "No script for $feature on Ubuntu file_name" >&2
         exit 1
     fi
 
-    echo "==> running $feature for Ubuntu $VERSION_ID"
+    echo "==> running 'install' $feature for Ubuntu: $file_name"
     sudo bash "$script"
 }
 
