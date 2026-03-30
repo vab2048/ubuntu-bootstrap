@@ -1,6 +1,3 @@
-#!/usr/bin/env bash
-set -euo pipefail
-
 #######################################################################################################################
 # Install tailscale
 # We just source the full install script.

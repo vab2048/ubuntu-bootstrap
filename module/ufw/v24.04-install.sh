@@ -1,4 +1,3 @@
-
 #######################################################################################################################
 # Install ufw
 # - It is likely that ufw is already installed - it comes by default on both server and desktop Ubuntu installations.

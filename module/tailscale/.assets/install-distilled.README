@@ -4,7 +4,7 @@
 # what it actually does.
 #######################################################################################################################
 
-# See /utils/os-release.sh for centralized commentary.
+# See "os-release.sh" for centralized commentary.
 # This will give us the e.g. UBUNTU_CODENAME=noble for v22.04.
 source /etc/os-release
 
