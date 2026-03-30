@@ -12,3 +12,7 @@ banner "Running package-configure.sh"
 banner "Configure docker"
 run_module_script docker configure
 banner "docker configuration complete"
+
+banner "Configure ufw"
+run_module_script ufw configure
+banner "ufw configuration complete"
