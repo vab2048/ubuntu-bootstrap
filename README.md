@@ -48,5 +48,36 @@ This is for a number of reasons:
    - `-x` -  print the command being executed (for debugging this is useful).
    - `-o pipefail` - if you have a pipeline e.g. `curl http://www.example.com | grep foo` then the error code in the first part of the pipline is what is returned and the rest of the pipeline does not run. 
 
+# Usage
 
+## Lightsail
+
+Use the following script to configure the Ubuntu instance (assumes AWS):
+
+```sh
+echo "Running as user '$USER'"
+sudo apt-get update
+
+# Git should already be installed but this is here just in case
+sudo apt-get install -y git
+
+# Clone the bootstrap repo. Notes: 
+# - You need a public ipv4 address to clone from github. Currently (as of Mar 2026) ipv6 only is not supported.
+# - This will clone into /opt/ubuntu-bootstrap with owner bring root 
+sudo git clone https://github.com/vab2048/ubuntu-bootstrap.git /opt/ubuntu-bootstrap
+
+# Change user:group ownership of cloned repo to $USER (on cloud this would be the 'ubuntu' user/group), so we don't
+# need to keep adding sudo 
+sudo chown -R $USER:$USER /opt/ubuntu-bootstrap
+
+ 
+cd /opt/ubuntu-bootstrap
+
+# (OPTIONAL) Move to branch with desired script (if not default branch of main)
+# git checkout feature/script-dev
+
+# Execute our "init" script.
+chmod u+x bin/init.sh
+sudo ./bin/init.sh
+```
 
