@@ -70,14 +70,13 @@ sudo git clone https://github.com/vab2048/ubuntu-bootstrap.git /opt/ubuntu-boots
 # need to keep adding sudo 
 sudo chown -R $USER:$USER /opt/ubuntu-bootstrap
 
- 
 cd /opt/ubuntu-bootstrap
 
-# (OPTIONAL) Move to branch with desired script (if not default branch of main)
+# (OPTIONAL) Move to desired branch/tag
 # git checkout feature/script-dev
+git checkout v0.0.1
 
 # Execute our "init" script.
 chmod u+x bin/init.sh
 sudo ./bin/init.sh
 ```
-
