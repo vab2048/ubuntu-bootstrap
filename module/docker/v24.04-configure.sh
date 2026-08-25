@@ -1,8 +1,14 @@
 ########
 # Docker Post Installation Configuration
 #     To allow non-root users to execute docker commands, we create the 'docker' group and add ourselves to it.
-#     On Ubuntu this means adding the default user (called "ubuntu" and referenced as $USER) to the group.
+#     On Ubuntu we should also add the user to that group. (By default it is called "ubuntu").
 #     See https://docs.docker.com/engine/install/linux-postinstall
+
+# SUDO_USER is a standard environment variable set by sudo to the
+# username of the account that invoked sudo. Fall back to USER when
+# the bootstrap is run without sudo.
+INVOKING_USER="${SUDO_USER:-$USER}"
+
 if getent group docker > /dev/null; then
     echo "Group 'docker' already exists."
 else
@@ -14,18 +20,18 @@ fi
 # - id -nG lists all groups for the user
 # - grep -qw ensures an exact match (no partial matches like 'dockerroot')
 GROUP="docker"
-if id -nG "$USER" | grep -qw "$GROUP"; then
+if id -nG "$INVOKING_USER" | grep -qw "$GROUP"; then
   # No change needed -> idempotent behavior
-  echo "User '$USER' is already in group '$GROUP' - no action needed."
+  echo "User '$INVOKING_USER' is already in group '$GROUP' - no action needed."
 else
   # Only run usermod if the user is NOT already in the group
-  echo "Adding user '$USER' to group '$GROUP'..."
+  echo "Adding user '$INVOKING_USER' to group '$GROUP'..."
 
   # -aG appends the group without removing existing memberships
   # Requires sudo/root privileges
-  sudo usermod -aG "$GROUP" "$USER"
+  sudo usermod -aG "$GROUP" "$INVOKING_USER"
 
-  echo "User '$USER' has been added to group '$GROUP'."
+  echo "User '$INVOKING_USER' has been added to group '$GROUP'."
   echo "Note: You may need to log out/in or run 'newgrp $GROUP' for this to take effect."
 fi
 
