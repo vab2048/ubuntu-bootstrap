@@ -37,7 +37,9 @@ run_module_script() {
     if (( EUID == 0 )); then
         bash "$script"
     else
-        sudo bash "$script"
+        # sudo normally resets the environment. env adds REPO_ROOT to the elevated
+        # command's environment without preserving unrelated caller variables.
+        sudo env REPO_ROOT="$REPO_ROOT" bash "$script"
     fi
 }
 
