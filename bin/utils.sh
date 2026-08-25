@@ -33,7 +33,12 @@ run_module_script() {
     fi
 
     echo "==> running '$action' $feature for Ubuntu: $file_name"
-    sudo bash "$script"
+    # If invoked without elevation, elevate the module script here (avoid nested sudo).
+    if (( EUID == 0 )); then
+        bash "$script"
+    else
+        sudo bash "$script"
+    fi
 }
 
 ########
