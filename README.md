@@ -17,6 +17,10 @@ LTS Version Table:
 | 24.04 LTS | Noble     | 2024-04-25   | 2029-05-31    |
 | 26.04 LTS | Resolute  | 2026-04-23   | 2031-05-29    |
 
+This bootstrap has been tested end-to-end on AWS on the following Ubuntu versions:
+- v24.04 LTS (Noble)
+- v26.04 LTS (Resolute).
+
 ## Script Shebang and Preamble
 
 Scripts in this repo usually start with: 
