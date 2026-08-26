@@ -1,17 +1,19 @@
 
 ########
-# run_module_script <feature> <action>:
+# run_module_script <feature> <action> [script-version]:
 #    - $1 - <feature> - the module directory name under /module/<feature>.
 #    - $2 - <action>  - expected to be either "install" or "configure".
-#    - Runs /module/<feature>/v$VERSION_ID-<action>.sh for the current Ubuntu version.
+#    - $3 - <script-version> - optional implementation version.
+#      Defaults to VERSION_ID when omitted.
 run_module_script() {
-    if [ "$#" -ne 2 ]; then
-        echo "Usage: run_module_script <feature> <install|configure>"
+    if [[ "$#" -lt 2 || "$#" -gt 3 ]]; then
+        echo "Usage: run_module_script <feature> <install|configure> [script-version]"
         return 1
     fi
 
     local feature="$1"
     local action="$2"
+    local script_version="${3:-$VERSION_ID}"
 
     case "$action" in
         install|configure)
@@ -22,7 +24,7 @@ run_module_script() {
             ;;
     esac
 
-    local file_name="v$VERSION_ID-$action.sh"
+    local file_name="v$script_version-$action.sh"
     local script="$REPO_ROOT/module/$feature/$file_name"
 
     if [[ ! -f "$script" ]]; then
@@ -31,7 +33,14 @@ run_module_script() {
     fi
 
     echo "==> running '$action' $feature for Ubuntu: $file_name"
-    sudo bash "$script"
+    # If invoked without elevation, elevate the module script here (avoid nested sudo).
+    if (( EUID == 0 )); then
+        bash "$script"
+    else
+        # sudo normally resets the environment. env adds REPO_ROOT to the elevated
+        # command's environment without preserving unrelated caller variables.
+        sudo env REPO_ROOT="$REPO_ROOT" bash "$script"
+    fi
 }
 
 ########

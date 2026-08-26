@@ -15,7 +15,9 @@ set -euo pipefail
 # Step 1 - Define global variables
 #
 # Where we expect this repo to be cloned to.
-REPO_ROOT=/opt/ubuntu-bootstrap
+# Module scripts run in child Bash processes. Export REPO_ROOT so compatibility
+# wrappers can locate bin/utils.sh and delegate through run_module_script.
+export REPO_ROOT=/opt/ubuntu-bootstrap
 REPO_BIN_DIR="$REPO_ROOT/bin"
 PACKAGE_INSTALL_SCRIPT="$REPO_BIN_DIR/package-install.sh"
 PACKAGE_CONFIGURE_SCRIPT="$REPO_BIN_DIR/package-configure.sh"
