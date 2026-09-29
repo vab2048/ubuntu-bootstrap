@@ -5,4 +5,5 @@ set -euo pipefail
 # Delegate through run_module_script rather than using a symlink to avoid Windows Git
 # checkout issues with symlinks.
 source "$REPO_ROOT/bin/utils.sh"
+echo "Ubuntu 26.04: delegating to the compatible Ubuntu 24.04 docker installer"
 run_module_script docker install 24.04
